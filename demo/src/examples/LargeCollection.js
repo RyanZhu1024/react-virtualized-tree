@@ -32,7 +32,7 @@ class LargeCollection extends Component {
       <UnstableFastTree nodes={this.state.nodes} onChange={this.handleChange}>
         {({style, node, ...rest}) => (
           <div style={style}>
-            <Expandable enableShiftClick node={node} {...rest}>
+            <Expandable node={node} {...rest}>
               {node.name}
               <Deletable node={node} {...rest}>
                 <Favorite node={node} {...rest} />

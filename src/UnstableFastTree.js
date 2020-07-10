@@ -18,10 +18,10 @@ export default class UnstableFastTree extends React.Component {
   handleChange = ({node, type, index}) => {
     let nodes;
 
-    if (type === UPDATE_TYPE.UPDATE) {
-      nodes = TreeStateModifiers.editNodeAt(this.props.nodes, index, node);
-    } else {
+    if (type === UPDATE_TYPE.DELETE) {
       nodes = TreeStateModifiers.deleteNodeAt(this.props.nodes, index);
+    } else {
+      nodes = TreeStateModifiers.editNodeAt(this.props.nodes, index, node);
     }
 
     this.props.onChange(nodes);

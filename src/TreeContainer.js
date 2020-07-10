@@ -4,13 +4,21 @@ import PropTypes from 'prop-types';
 import Tree from './Tree';
 import {UPDATE_TYPE} from './contants';
 import {getFlattenedTree} from './selectors/getFlattenedTree';
-import {deleteNodeFromTree, replaceNodeFromTree, getRowIndexFromId} from './selectors/nodes';
+import {
+  deleteNodeFromTree,
+  replaceNodeFromTree,
+  getRowIndexFromId,
+  expandNodeFromTreeRecursively,
+  collapseNodeFromTreeRecursively,
+} from './selectors/nodes';
 import {Node} from './shapes/nodeShapes';
 import {createSelector} from 'reselect';
 
 const DEFAULT_UPDATE_TYPES = {
   [UPDATE_TYPE.DELETE]: deleteNodeFromTree,
   [UPDATE_TYPE.UPDATE]: replaceNodeFromTree,
+  [UPDATE_TYPE.EXPAND_RECURSIVELY]: expandNodeFromTreeRecursively,
+  [UPDATE_TYPE.COLLAPSE_RECURSIVELY]: collapseNodeFromTreeRecursively,
 };
 
 const getExtensions = createSelector(

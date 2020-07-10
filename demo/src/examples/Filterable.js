@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import classNames from 'classnames';
 import {Checkbox} from 'semantic-ui-react';
 
 import Tree from '../../../src/TreeContainer';
@@ -33,7 +32,7 @@ class Filterable extends Component {
           groups: {
             ALL: {
               name: 'All',
-              filter: node => true,
+              filter: () => true,
             },
             [EXPANDED]: {
               name: 'Expanded',
@@ -81,7 +80,7 @@ class Filterable extends Component {
               <Tree ref={this.treeRef} nodes={nodes} onChange={this.handleChange}>
                 {({style, node, ...rest}) => (
                   <div style={style}>
-                    <Expandable node={node} {...rest}>
+                    <Expandable node={node} {...rest} enableShiftClick>
                       <Favorite node={node} {...rest}>
                         {node.name}
                       </Favorite>

@@ -3,8 +3,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import {submitEvent} from '../eventWrappers';
-import {getNodeRenderOptions, updateNode, updateNodeRecursively} from '../selectors/nodes';
+import {getNodeRenderOptions, updateNode} from '../selectors/nodes';
 import {Renderer} from '../shapes/rendererShapes';
+import {UPDATE_TYPE} from '../contants';
 
 const Expandable = ({
   onChange,
@@ -27,7 +28,11 @@ const Expandable = ({
 
   const handleChange = e => {
     if (enableShiftClick && e.shiftKey) {
-      onChange({...updateNodeRecursively(node, {expanded: !isExpanded}), index});
+      onChange({
+        node: {...node, state: {...node.state, expanded: !isExpanded}},
+        type: isExpanded ? UPDATE_TYPE.COLLAPSE_RECURSIVELY : UPDATE_TYPE.EXPAND_RECURSIVELY,
+        index,
+      });
     } else {
       onChange({...updateNode(node, {expanded: !isExpanded}), index});
     }

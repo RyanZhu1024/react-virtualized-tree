@@ -23,6 +23,8 @@ const FLATTEN_TREE_PROPERTIES = ['deepness', 'parents'];
 
 const NODE_OPERATION_TYPES = {
   CHANGE_NODE: 'CHANGE_NODE',
+  EXPAND_NODE_RECURSIVELY: 'EXPAND_NODE_RECURSIVELY',
+  COLLAPSE_NODE_RECURSIVELY: 'COLLAPSE_NODE_RECURSIVELY',
   DELETE_NODE: 'DELETE_NODE',
 };
 
@@ -34,7 +36,45 @@ const NODE_CHANGE_OPERATIONS = {
           ? omit({...updatedNode, ...(n.children && {children: [...n.children]})}, FLATTEN_TREE_PROPERTIES)
           : n,
     ),
+  EXPAND_NODE_RECURSIVELY: (nodes, updatedNode) =>
+    nodes.map(
+      n =>
+        n.id === updatedNode.id
+          ? omit(
+              {
+                ...updatedNode,
+                ...(n.children && {
+                  children: [...n.children.map(child => _recursivelyUpdateNode(child, {expanded: true}))],
+                }),
+              },
+              FLATTEN_TREE_PROPERTIES,
+            )
+          : n,
+    ),
+  COLLAPSE_NODE_RECURSIVELY: (nodes, updatedNode) =>
+    nodes.map(
+      n =>
+        n.id === updatedNode.id
+          ? omit(
+              {
+                ...updatedNode,
+                ...(n.children && {
+                  children: [...n.children.map(child => _recursivelyUpdateNode(child, {expanded: false}))],
+                }),
+              },
+              FLATTEN_TREE_PROPERTIES,
+            )
+          : n,
+    ),
   DELETE_NODE: (nodes, updatedNode) => nodes.filter(n => n.id !== updatedNode.id),
+};
+
+export const expandNodeFromTreeRecursively = (nodes, updatedNode) => {
+  return replaceNodeFromTree(nodes, updatedNode, NODE_OPERATION_TYPES.EXPAND_NODE_RECURSIVELY);
+};
+
+export const collapseNodeFromTreeRecursively = (nodes, updatedNode) => {
+  return replaceNodeFromTree(nodes, updatedNode, NODE_OPERATION_TYPES.COLLAPSE_NODE_RECURSIVELY);
 };
 
 export const replaceNodeFromTree = (nodes, updatedNode, operation = NODE_OPERATION_TYPES.CHANGE_NODE) => {
@@ -84,14 +124,6 @@ export const updateNode = (originalNode, newState) => ({
   },
   type: UPDATE_TYPE.UPDATE,
 });
-
-export const updateNodeRecursively = (originalNode, newState) => {
-  const result = {
-    node: _recursivelyUpdateNode(originalNode, newState),
-    type: UPDATE_TYPE.UPDATE,
-  };
-  return result;
-};
 
 export const _recursivelyUpdateNode = (originalNode, newState) => {
   const {children = [], state, ...rest} = originalNode;
